@@ -6,7 +6,7 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    # TODO 大约用时 5 分钟
+    # 大约用时 1 分钟
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
