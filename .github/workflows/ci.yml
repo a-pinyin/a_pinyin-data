@@ -1,0 +1,48 @@
+name: CI
+on: [push, pull_request]
+
+#env:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # TODO 大约用时 5 分钟
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      # cache cargo
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cargo
+          key: ${{ runner.os }}-cargo-1
+      # rust 编译工具
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - run: cargo --version
+      # DEBUG
+      - run: bash --version
+      - run: make --version
+
+      # 主要编译过程 (检查, 测试, 编译 等)
+      # `bash -c time` 用于显示主要命令的执行时间
+      - run: make PREFIX="bash -c 'time \$\$*' ''" ci
+
+      #### 上传编译结果
+
+      # apd 可执行文件
+      - uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: apd-x86_64-unknown-linux-gnu
+          path: apd/target/release/apd
+      # A拼音 2.0 内置数据库 a_pinyin-2.zip
+      - uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: a_pinyin-2-db
+          path: out/a_pinyin-2.zip
