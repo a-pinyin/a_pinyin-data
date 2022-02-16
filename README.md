@@ -23,6 +23,16 @@ TODO 尚未完成
 
 + 使用 [rustup](https://www.rust-lang.org/tools/install) (rust/cargo)
 
+  ```sh
+  rustup target add wasm32-wasi
+  ```
+
++ 下载 Unicode 14.0 数据 (只需一次)
+
+  ```sh
+  make u14
+  ```
+
 + 编译 (apd 工具及 a_pinyin-2.zip)
 
   ```sh

@@ -8,6 +8,9 @@
 #   默认目标, 或者: make out
 #   用于开发者手动编译 apd 工具, 以及生成内置数据库 a_pinyin-2.zip
 #
+# + make u14
+#   下载 Unicode 14.0 的原始数据
+#
 # + make apd
 #   仅编译 apd 工具
 #
@@ -20,6 +23,10 @@
 BIN_CARGO := cargo
 # zip 可执行命令
 BIN_ZIP := zip
+# curl
+BIN_CURL := curl
+# wasm-gc
+BIN_WASM_GC := wasm-gc
 
 # 命令前缀
 PREFIX :=
@@ -32,11 +39,15 @@ out: apd db2
 
 # [导出] 用于 github CI: make ci
 .PHONY: ci
-ci: first_test check test out
+ci: first_test check test apd u14 db2
 
 # [导出] 用于编译 apd: make apd
 .PHONY: apd
 apd: apd_release
+
+# [导出] 下载 Uincode 14.0 数据
+.PHONY: u14
+u14: u14_dl
 
 
 #### 下方是具体的编译命令
@@ -51,6 +62,8 @@ first_test:
 .PHONY: apd_release
 apd_release:
 	cd apd && ${PREFIX} ${BIN_CARGO} build --release
+	cd apd && ${PREFIX} ${BIN_CARGO} build --target wasm32-wasi --release
+	${PREFIX} ${BIN_WASM_GC} apd/target/wasm32-wasi/release/apd.wasm
 
 # 测试
 .PHONY: test
@@ -70,6 +83,13 @@ check: check_apd
 check_apd:
 	cd apd && ${PREFIX} ${BIN_CARGO} fmt --check
 
+
+# TODO 下载 Unicode 14.0 数据
+.PHONY: u14_dl
+u14_dl:
+	mkdir -p data1/u14
+	${PREFIX} ${BIN_CURL} -o data1/u14/Unihan.zip "https://www.unicode.org/Public/UCD/latest/ucd/Unihan.zip"
+	cd data1/u14 && unzip Unihan.zip
 
 # TODO 生成内置数据库 a_pinyin-2.zip
 .PHONY: db2

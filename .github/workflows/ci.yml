@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # 大约用时 1 分钟
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -22,8 +22,12 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: wasm32-wasi
           components: rustfmt, clippy
       - run: cargo --version
+      # wasm-gc
+      - run: cargo install wasm-gc
+      - run: type wasm-gc
       # DEBUG
       - run: bash --version
       - run: make --version
@@ -40,9 +44,20 @@ jobs:
           if-no-files-found: error
           name: apd-x86_64-unknown-linux-gnu
           path: apd/target/release/apd
+      - uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: apd-wasm32-wasi
+          path: apd/target/wasm32-wasi/release/apd.wasm
       # A拼音 2.0 内置数据库 a_pinyin-2.zip
       - uses: actions/upload-artifact@v2
         with:
           if-no-files-found: error
           name: a_pinyin-2-db
           path: out/a_pinyin-2.zip
+      # Unihan.zip
+      - uses: actions/upload-artifact@v2
+        with:
+          if-no-files-found: error
+          name: Unihan
+          path: data1/u14/Unihan.zip
