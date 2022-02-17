@@ -39,7 +39,7 @@ jobs:
 
       # 主要编译过程 (检查, 测试, 编译 等)
       # `bash -c time` 用于显示主要命令的执行时间
-      - run: make PREFIX="bash -c 'time \$\$*' ''" DIR_WASI_SDK=$(pwd)/wask-sdk-14.0 ci
+      - run: make PREFIX="bash -c 'time \$\$*' ''" DIR_WASI_SDK=$(pwd)/wasi-sdk-14.0 ci
 
       #### 上传编译结果
 
