@@ -30,9 +30,7 @@ jobs:
       - run: cargo install wasm-gc
       - run: type wasm-gc
       # wasi-sdk
-      - run: curl -o wasi-sdk-14.0-linux.tar.gz ${{ env.URL_WASI_SDK }}
-      # FIXME
-      - run: cat wasi-sdk-14.0-linux.tar.gz
+      - run: curl -L -o wasi-sdk-14.0-linux.tar.gz ${{ env.URL_WASI_SDK }}
       - run: tar xvf wasi-sdk-14.0-linux.tar.gz
       - run: ls wasi-sdk-14.0
       # DEBUG
