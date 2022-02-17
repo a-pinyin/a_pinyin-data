@@ -64,7 +64,7 @@ first_test:
 .PHONY: apd_release
 apd_release:
 	cd apd && ${PREFIX} ${BIN_CARGO} build --release
-	cd apd && ${PREFIX}  env CC_wasm32_wasi=${DIR_WASI_SDK}/bin/clang CARGO_TARGET_WASM32_WASI_LINKER=${DIR_WASI_SDK}/bin/clang RUSTFLAGS="-C target-feature=-crt-static"  ${BIN_CARGO} build --target wasm32-wasi --release
+	cd apd && ${PREFIX}  env CC_wasm32_wasi=${DIR_WASI_SDK}/bin/clang CARGO_TARGET_WASM32_WASI_LINKER=${DIR_WASI_SDK}/bin/clang \'RUSTFLAGS=-C target-feature=-crt-static\'  ${BIN_CARGO} build --target wasm32-wasi --release
 	${PREFIX} ${BIN_WASM_GC} apd/target/wasm32-wasi/release/apd.wasm
 
 # 测试
