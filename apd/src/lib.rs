@@ -6,6 +6,7 @@ use cli::命令行参数;
 use cli::显示帮助信息;
 
 pub mod cli;
+mod db;
 
 #[cfg(test)]
 mod test;
@@ -21,6 +22,7 @@ pub fn 执行命令(参数: &命令行参数) -> Result<()> {
         }
         命令行参数::版本 => {
             println!("{}", 版本号);
+            println!("sqlite {}", db::sqlite_version());
         }
         命令行参数::帮助 => 显示帮助信息(),
         // TODO

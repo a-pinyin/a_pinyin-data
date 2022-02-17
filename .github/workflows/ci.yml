@@ -1,13 +1,14 @@
 name: CI
 on: [push, pull_request]
 
-#env:
+env:
+  URL_WASI_SDK: https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-14/wasi-sdk-14.0-linux.tar.gz
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 大约用时 2 分钟
-    timeout-minutes: 20
+    # 大约用时 5 分钟
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v2
         with:
@@ -17,7 +18,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ~/.cargo
-          key: ${{ runner.os }}-cargo-1
+          key: ${{ runner.os }}-cargo-2
       # rust 编译工具
       - uses: actions-rs/toolchain@v1
         with:
@@ -28,13 +29,17 @@ jobs:
       # wasm-gc
       - run: cargo install wasm-gc
       - run: type wasm-gc
+      # wasi-sdk
+      - run: curl -o wasi-sdk-14.0-linux.tar.gz ${{ env.URL_WASI_SDK }}
+      - run: tar xvf wasi-sdk-14.0-linux.tar.gz
+      - run: ls wasi-sdk-14.0
       # DEBUG
       - run: bash --version
       - run: make --version
 
       # 主要编译过程 (检查, 测试, 编译 等)
       # `bash -c time` 用于显示主要命令的执行时间
-      - run: make PREFIX="bash -c 'time \$\$*' ''" ci
+      - run: make PREFIX="bash -c 'time \$\$*' ''" DIR_WASI_SDK=$(pwd)/wask-sdk-14.0 ci
 
       #### 上传编译结果
 
